@@ -1,14 +1,29 @@
 defmodule AirlockApiWeb.Router do
   use AirlockApiWeb, :router
 
+
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  pipeline :browser do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, {AirlockApiWeb.LayoutView, :root}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
   end
 
   scope "/api", AirlockApiWeb do
     pipe_through :api
 
     resources "/", AirlockController
+  end
+
+  scope "/", AirlockApiWeb do
+    import Phoenix.LiveView.Router
+    live "/plot", AirDataPageLive, :index
   end
 
   # Enables LiveDashboard only for development
@@ -22,7 +37,7 @@ defmodule AirlockApiWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through [:fetch_session, :protect_from_forgery]
+      pipe_through [:fetch_session, :protect_from_forgery, :browser]
       live_dashboard "/dashboard", metrics: AirlockApiWeb.Telemetry
     end
   end

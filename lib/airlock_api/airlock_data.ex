@@ -18,7 +18,8 @@ defmodule AirlockApi.AirlockData do
 
   """
   def list_airdata do
-    Repo.all(Airlock)
+    query = from a in Airlock, order_by: [desc: a.inserted_at], select: a
+    Repo.all(query)
   end
 
   @doc """

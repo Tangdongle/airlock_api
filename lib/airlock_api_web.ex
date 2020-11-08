@@ -24,6 +24,24 @@ defmodule AirlockApiWeb do
       import Plug.Conn
       import AirlockApiWeb.Gettext
       alias AirlockApiWeb.Router.Helpers, as: Routes
+      import Phoenix.LiveView.Controller
+    end
+  end
+
+  def live_view do
+    quote do
+      use Phoenix.LiveView,
+        layout: {AirlockApiWeb.LayoutView, "live.html"}
+
+      unquote(view_helpers())
+    end
+  end
+
+  def live_component do
+    quote do
+      use Phoenix.LiveComponent
+
+      unquote(view_helpers())
     end
   end
 
@@ -48,6 +66,7 @@ defmodule AirlockApiWeb do
 
       import Plug.Conn
       import Phoenix.Controller
+      import Phoenix.LiveView.Router
     end
   end
 
@@ -66,6 +85,7 @@ defmodule AirlockApiWeb do
       import AirlockApiWeb.ErrorHelpers
       import AirlockApiWeb.Gettext
       alias AirlockApiWeb.Router.Helpers, as: Routes
+      import Phoenix.LiveView.Helpers
     end
   end
 
