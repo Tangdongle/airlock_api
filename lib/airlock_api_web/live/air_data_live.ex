@@ -11,6 +11,7 @@ defmodule AirlockApiWeb.AirDataLive do
       |> assign_dataset()
       |> assign_chart()
       |> assign_chart_svg()
+      |> assign_sparkchart()
     }
   end
 
@@ -34,11 +35,22 @@ defmodule AirlockApiWeb.AirDataLive do
     )
   end
 
+  defp assign_sparkchart(%{assigns: %{dataset: %{data: dataset}}} = socket) do
+    socket
+    |> assign(:spark,
+      Contex.Sparkline.new(
+        dataset
+        |> Enum.map(&Kernel.elem(&1, 0))
+      )
+      |> Contex.Sparkline.draw()
+    )
+  end
+
   defp assign_chart_svg(%{assigns: %{chart: chart}} = socket) do
     socket
     |> assign(
       :chart_svg,
-      Contex.Plot.new(300, 300, chart)
+      Contex.Plot.new(200, 200, chart)
       |> Contex.Plot.axis_labels("Time", "BPM/Temp")
       |> Contex.Plot.to_svg()
     )
